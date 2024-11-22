@@ -1,0 +1,6 @@
+ktor:
+    application:
+        modules:
+            - dev.pythonplayer123.kotlindns.ApplicationKt.module
+    deployment:
+        port: 5353
