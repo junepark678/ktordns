@@ -49,8 +49,7 @@ enum class DNSRRType(val value: UShort, val dnsResourceRecordClass: KClass<out D
     TXT(16u),
     URI(256u),
     ZONEMD(63u),
-    // EDNS
-    OPT(41u),
+    OPT(41u),    // EDNS
     UNKNOWN(0u);
 
     companion object {
