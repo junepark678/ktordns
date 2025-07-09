@@ -101,6 +101,42 @@ fun main() {
                                         value = "CNAME"
                                         +"CNAME"
                                     }
+                                    option {
+                                        value = "SOA"
+                                        +"SOA"
+                                    }
+                                    option {
+                                        value = "MX"
+                                        +"MX"
+                                    }
+                                    option {
+                                        value = "TXT"
+                                        +"TXT"
+                                    }
+                                    option {
+                                        value = "PTR"
+                                        +"PTR"
+                                    }
+                                    option {
+                                        value = "SRV"
+                                        +"SRV"
+                                    }
+                                    option {
+                                        value = "DNSKEY"
+                                        +"DNSKEY"
+                                    }
+                                    option {
+                                        value = "DS"
+                                        +"DS"
+                                    }
+                                    option {
+                                        value = "RRSIG"
+                                        +"RRSIG"
+                                    }
+                                    option {
+                                        value = "NSEC"
+                                        +"NSEC"
+                                    }
                                 }
                                 submitInput()
                             }
