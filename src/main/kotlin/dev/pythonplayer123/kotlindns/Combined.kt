@@ -126,6 +126,15 @@ fun main() {
                             "AAAA" -> DNSRRType.AAAA
                             "NS" -> DNSRRType.NS
                             "CNAME" -> DNSRRType.CNAME
+                            "SOA" -> DNSRRType.SOA
+                            "MX" -> DNSRRType.MX
+                            "TXT" -> DNSRRType.TXT
+                            "PTR" -> DNSRRType.PTR
+                            "SRV" -> DNSRRType.SRV
+                            "DNSKEY" -> DNSRRType.DNSKEY
+                            "DS" -> DNSRRType.DS
+                            "RRSIG" -> DNSRRType.RRSIG
+                            "NSEC" -> DNSRRType.NSEC
                             else -> {
                                 return@post call.respondText("invalid query", status = HttpStatusCode.PaymentRequired)
                             }
