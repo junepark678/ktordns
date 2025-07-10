@@ -104,6 +104,126 @@ fun main(args: Array<String>) {
                                     value = "CNAME"
                                     +"CNAME"
                                 }
+                                option {
+                                    value = "SOA"
+                                    +"SOA"
+                                }
+                                option {
+                                    value = "MX"
+                                    +"MX"
+                                }
+                                option {
+                                    value = "TXT"
+                                    +"TXT"
+                                }
+                                option {
+                                    value = "PTR"
+                                    +"PTR"
+                                }
+                                option {
+                                    value = "SRV"
+                                    +"SRV"
+                                }
+                                option {
+                                    value = "HINFO"
+                                    +"HINFO"
+                                }
+                                option {
+                                    value = "LOC"
+                                    +"LOC"
+                                }
+                                option {
+                                    value = "NAPTR"
+                                    +"NAPTR"
+                                }
+                                option {
+                                    value = "CAA"
+                                    +"CAA"
+                                }
+                                option {
+                                    value = "TLSA"
+                                    +"TLSA"
+                                }
+                                option {
+                                    value = "SSHFP"
+                                    +"SSHFP"
+                                }
+                                option {
+                                    value = "CERT"
+                                    +"CERT"
+                                }
+                                option {
+                                    value = "DNAME"
+                                    +"DNAME"
+                                }
+                                option {
+                                    value = "RP"
+                                    +"RP"
+                                }
+                                option {
+                                    value = "HTTPS"
+                                    +"HTTPS"
+                                }
+                                option {
+                                    value = "SVCB"
+                                    +"SVCB"
+                                }
+                                option {
+                                    value = "EUI48"
+                                    +"EUI48"
+                                }
+                                option {
+                                    value = "EUI64"
+                                    +"EUI64"
+                                }
+                                option {
+                                    value = "URI"
+                                    +"URI"
+                                }
+                                option {
+                                    value = "KX"
+                                    +"KX"
+                                }
+                                option {
+                                    value = "AFSDB"
+                                    +"AFSDB"
+                                }
+                                option {
+                                    value = "IPSECKEY"
+                                    +"IPSECKEY"
+                                }
+                                option {
+                                    value = "HIP"
+                                    +"HIP"
+                                }
+                                option {
+                                    value = "DNSKEY"
+                                    +"DNSKEY"
+                                }
+                                option {
+                                    value = "DS"
+                                    +"DS"
+                                }
+                                option {
+                                    value = "RRSIG"
+                                    +"RRSIG"
+                                }
+                                option {
+                                    value = "NSEC"
+                                    +"NSEC"
+                                }
+                                option {
+                                    value = "NSEC3"
+                                    +"NSEC3"
+                                }
+                                option {
+                                    value = "KEY"
+                                    +"KEY"
+                                }
+                                option {
+                                    value = "SMIMEA"
+                                    +"SMIMEA"
+                                }
                             }
                             submitInput()
                         }
@@ -129,6 +249,36 @@ fun main(args: Array<String>) {
                         "AAAA" -> DNSRRType.AAAA
                         "NS" -> DNSRRType.NS
                         "CNAME" -> DNSRRType.CNAME
+                        "SOA" -> DNSRRType.SOA
+                        "MX" -> DNSRRType.MX
+                        "TXT" -> DNSRRType.TXT
+                        "PTR" -> DNSRRType.PTR
+                        "SRV" -> DNSRRType.SRV
+                        "HINFO" -> DNSRRType.HINFO
+                        "LOC" -> DNSRRType.LOC
+                        "NAPTR" -> DNSRRType.NAPTR
+                        "CAA" -> DNSRRType.CAA
+                        "TLSA" -> DNSRRType.TLSA
+                        "SSHFP" -> DNSRRType.SSHFP
+                        "CERT" -> DNSRRType.CERT
+                        "DNAME" -> DNSRRType.DNAME
+                        "RP" -> DNSRRType.RP
+                        "HTTPS" -> DNSRRType.HTTPS
+                        "SVCB" -> DNSRRType.SVCB
+                        "EUI48" -> DNSRRType.EUI48
+                        "EUI64" -> DNSRRType.EUI64
+                        "URI" -> DNSRRType.URI
+                        "KX" -> DNSRRType.KX
+                        "AFSDB" -> DNSRRType.AFSDB
+                        "IPSECKEY" -> DNSRRType.IPSECKEY
+                        "HIP" -> DNSRRType.HIP
+                        "DNSKEY" -> DNSRRType.DNSKEY
+                        "DS" -> DNSRRType.DS
+                        "RRSIG" -> DNSRRType.RRSIG
+                        "NSEC" -> DNSRRType.NSEC
+                        "NSEC3" -> DNSRRType.NSEC3
+                        "KEY" -> DNSRRType.KEY
+                        "SMIMEA" -> DNSRRType.SMIMEA
                         else -> {
                             return@post call.respondText("invalid query", status = HttpStatusCode.PaymentRequired)
                         }
