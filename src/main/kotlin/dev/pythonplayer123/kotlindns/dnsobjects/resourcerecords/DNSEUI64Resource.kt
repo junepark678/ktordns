@@ -3,23 +3,22 @@ package dev.pythonplayer123.kotlindns.dnsobjects.resourcerecords
 import dev.pythonplayer123.kotlindns.dnsobjects.DNSQueryClass
 import dev.pythonplayer123.kotlindns.utils.DNSCompressor
 import dev.pythonplayer123.kotlindns.utils.add
-import dev.pythonplayer123.kotlindns.utils.decompressName
-import dev.pythonplayer123.kotlindns.utils.toDNSLabel
 
-class DNSCNAMEResource(
+class DNSEUI64Resource(
     name: String,
     dnsClass: DNSQueryClass,
     ttl: UInt,
-    private val cname: String
-) : DNSResourceRecord(name, DNSRRType.CNAME, dnsClass, ttl) {
+    private val eui64: ByteArray  // 64-bit EUI
+) : DNSResourceRecord(name, DNSRRType.EUI64, dnsClass, ttl) {
     override lateinit var rddata: ByteArray
 
     override val rdTextualRepresentation: String
-        get() = cname
+        get() = eui64.joinToString("-") { "%02x".format(it) }
 
     override fun toByteArray(compressor: DNSCompressor, message: ByteArray): ByteArray {
         val headerMessage = compressor.compressName(name, message).toMutableList()
-        rddata = compressor.compressName(cname, message)
+        
+        rddata = eui64
         headerMessage.add(type)
         headerMessage.add(dnsClass)
         headerMessage.add(ttl)
@@ -29,7 +28,7 @@ class DNSCNAMEResource(
     }
 
     companion object : DNSResourceCompanionObject {
-        override val value: DNSRRType = DNSRRType.CNAME
+        override val value: DNSRRType = DNSRRType.EUI64
 
         override fun parse(
             name: String,
@@ -38,10 +37,9 @@ class DNSCNAMEResource(
             message: ByteArray,
             offset: Int,
             rdlength: Int
-        ): Pair<DNSCNAMEResource, Int> {
-            val (a, i) = message.decompressName(offset)
-            return Pair(DNSCNAMEResource(name, dnsClass, ttl, a), i)
+        ): Pair<DNSEUI64Resource, Int> {
+            val eui64 = message.sliceArray(offset until offset + 8)
+            return Pair(DNSEUI64Resource(name, dnsClass, ttl, eui64), offset + 8)
         }
-
     }
 }

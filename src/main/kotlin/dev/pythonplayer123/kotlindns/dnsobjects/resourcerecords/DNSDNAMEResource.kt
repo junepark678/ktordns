@@ -4,22 +4,26 @@ import dev.pythonplayer123.kotlindns.dnsobjects.DNSQueryClass
 import dev.pythonplayer123.kotlindns.utils.DNSCompressor
 import dev.pythonplayer123.kotlindns.utils.add
 import dev.pythonplayer123.kotlindns.utils.decompressName
-import dev.pythonplayer123.kotlindns.utils.toDNSLabel
 
-class DNSCNAMEResource(
+class DNSDNAMEResource(
     name: String,
     dnsClass: DNSQueryClass,
     ttl: UInt,
-    private val cname: String
-) : DNSResourceRecord(name, DNSRRType.CNAME, dnsClass, ttl) {
+    private val target: String  // Target domain name
+) : DNSResourceRecord(name, DNSRRType.DNAME, dnsClass, ttl) {
     override lateinit var rddata: ByteArray
 
     override val rdTextualRepresentation: String
-        get() = cname
+        get() = target
 
     override fun toByteArray(compressor: DNSCompressor, message: ByteArray): ByteArray {
         val headerMessage = compressor.compressName(name, message).toMutableList()
-        rddata = compressor.compressName(cname, message)
+        
+        // Build the RDATA
+        val rdataList = mutableListOf<Byte>()
+        rdataList.addAll(compressor.compressName(target, message).toList())
+        
+        rddata = rdataList.toByteArray()
         headerMessage.add(type)
         headerMessage.add(dnsClass)
         headerMessage.add(ttl)
@@ -29,7 +33,7 @@ class DNSCNAMEResource(
     }
 
     companion object : DNSResourceCompanionObject {
-        override val value: DNSRRType = DNSRRType.CNAME
+        override val value: DNSRRType = DNSRRType.DNAME
 
         override fun parse(
             name: String,
@@ -38,10 +42,9 @@ class DNSCNAMEResource(
             message: ByteArray,
             offset: Int,
             rdlength: Int
-        ): Pair<DNSCNAMEResource, Int> {
-            val (a, i) = message.decompressName(offset)
-            return Pair(DNSCNAMEResource(name, dnsClass, ttl, a), i)
+        ): Pair<DNSDNAMEResource, Int> {
+            val (target, targetEnd) = message.decompressName(offset)
+            return Pair(DNSDNAMEResource(name, dnsClass, ttl, target), targetEnd)
         }
-
     }
 }

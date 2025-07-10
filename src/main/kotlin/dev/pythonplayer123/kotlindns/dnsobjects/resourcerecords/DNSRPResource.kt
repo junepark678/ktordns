@@ -4,22 +4,29 @@ import dev.pythonplayer123.kotlindns.dnsobjects.DNSQueryClass
 import dev.pythonplayer123.kotlindns.utils.DNSCompressor
 import dev.pythonplayer123.kotlindns.utils.add
 import dev.pythonplayer123.kotlindns.utils.decompressName
-import dev.pythonplayer123.kotlindns.utils.toDNSLabel
+import dev.pythonplayer123.kotlindns.utils.readShort
 
-class DNSCNAMEResource(
+class DNSRPResource(
     name: String,
     dnsClass: DNSQueryClass,
     ttl: UInt,
-    private val cname: String
-) : DNSResourceRecord(name, DNSRRType.CNAME, dnsClass, ttl) {
+    private val mboxDname: String,  // Mailbox domain name
+    private val txtDname: String    // Text domain name
+) : DNSResourceRecord(name, DNSRRType.RP, dnsClass, ttl) {
     override lateinit var rddata: ByteArray
 
     override val rdTextualRepresentation: String
-        get() = cname
+        get() = "$mboxDname $txtDname"
 
     override fun toByteArray(compressor: DNSCompressor, message: ByteArray): ByteArray {
         val headerMessage = compressor.compressName(name, message).toMutableList()
-        rddata = compressor.compressName(cname, message)
+        
+        // Build the RDATA
+        val rdataList = mutableListOf<Byte>()
+        rdataList.addAll(compressor.compressName(mboxDname, message).toList())
+        rdataList.addAll(compressor.compressName(txtDname, message).toList())
+        
+        rddata = rdataList.toByteArray()
         headerMessage.add(type)
         headerMessage.add(dnsClass)
         headerMessage.add(ttl)
@@ -29,7 +36,7 @@ class DNSCNAMEResource(
     }
 
     companion object : DNSResourceCompanionObject {
-        override val value: DNSRRType = DNSRRType.CNAME
+        override val value: DNSRRType = DNSRRType.RP
 
         override fun parse(
             name: String,
@@ -38,10 +45,14 @@ class DNSCNAMEResource(
             message: ByteArray,
             offset: Int,
             rdlength: Int
-        ): Pair<DNSCNAMEResource, Int> {
-            val (a, i) = message.decompressName(offset)
-            return Pair(DNSCNAMEResource(name, dnsClass, ttl, a), i)
+        ): Pair<DNSRPResource, Int> {
+            var i = offset
+            val (mboxDname, mboxEnd) = message.decompressName(i)
+            i = mboxEnd
+            val (txtDname, txtEnd) = message.decompressName(i)
+            i = txtEnd
+            
+            return Pair(DNSRPResource(name, dnsClass, ttl, mboxDname, txtDname), i)
         }
-
     }
 }

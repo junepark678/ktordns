@@ -4,22 +4,29 @@ import dev.pythonplayer123.kotlindns.dnsobjects.DNSQueryClass
 import dev.pythonplayer123.kotlindns.utils.DNSCompressor
 import dev.pythonplayer123.kotlindns.utils.add
 import dev.pythonplayer123.kotlindns.utils.decompressName
-import dev.pythonplayer123.kotlindns.utils.toDNSLabel
+import dev.pythonplayer123.kotlindns.utils.readShort
 
-class DNSCNAMEResource(
+class DNSAFSDBResource(
     name: String,
     dnsClass: DNSQueryClass,
     ttl: UInt,
-    private val cname: String
-) : DNSResourceRecord(name, DNSRRType.CNAME, dnsClass, ttl) {
+    private val subtype: UShort,   // Subtype
+    private val hostname: String   // Hostname
+) : DNSResourceRecord(name, DNSRRType.AFSDB, dnsClass, ttl) {
     override lateinit var rddata: ByteArray
 
     override val rdTextualRepresentation: String
-        get() = cname
+        get() = "$subtype $hostname"
 
     override fun toByteArray(compressor: DNSCompressor, message: ByteArray): ByteArray {
         val headerMessage = compressor.compressName(name, message).toMutableList()
-        rddata = compressor.compressName(cname, message)
+        
+        // Build the RDATA
+        val rdataList = mutableListOf<Byte>()
+        rdataList.add(subtype)
+        rdataList.addAll(compressor.compressName(hostname, message).toList())
+        
+        rddata = rdataList.toByteArray()
         headerMessage.add(type)
         headerMessage.add(dnsClass)
         headerMessage.add(ttl)
@@ -29,7 +36,7 @@ class DNSCNAMEResource(
     }
 
     companion object : DNSResourceCompanionObject {
-        override val value: DNSRRType = DNSRRType.CNAME
+        override val value: DNSRRType = DNSRRType.AFSDB
 
         override fun parse(
             name: String,
@@ -38,10 +45,14 @@ class DNSCNAMEResource(
             message: ByteArray,
             offset: Int,
             rdlength: Int
-        ): Pair<DNSCNAMEResource, Int> {
-            val (a, i) = message.decompressName(offset)
-            return Pair(DNSCNAMEResource(name, dnsClass, ttl, a), i)
+        ): Pair<DNSAFSDBResource, Int> {
+            var i = offset
+            val subtype = message.readShort(i)
+            i += 2
+            val (hostname, hostnameEnd) = message.decompressName(i)
+            i = hostnameEnd
+            
+            return Pair(DNSAFSDBResource(name, dnsClass, ttl, subtype, hostname), i)
         }
-
     }
 }

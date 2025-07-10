@@ -25,19 +25,6 @@ abstract class DNSResourceRecord(var name: String, var type: DNSRRType, var dnsC
 
             val qtype = DNSRRType.fromValue(message.readShort(i))
             i += 2
-            if (qtype == DNSRRType.OPT) {
-                i += 2 // class (payload size)
-                i += 4 // TTL (extended RCODE)
-                val rdlength = message.readShort(i).toShort()
-                i += 2 // RDLEN
-                i += rdlength
-                return Pair(object: DNSResourceRecord(qname, qtype, DNSQueryClass.NONE, 0u) {
-                    override val rddata: ByteArray
-                        get() = message.sliceArray(i-10..i-rdlength)
-                    override val rdTextualRepresentation: String
-                        get() = rddata.toString()
-                }, i)
-            }
             val qclass = DNSQueryClass.fromValue(message.readShort(i))
             i += 2
             val ttl = message.readInt(i)
